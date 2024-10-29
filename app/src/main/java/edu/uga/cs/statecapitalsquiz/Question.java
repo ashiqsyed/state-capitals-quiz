@@ -1,39 +1,60 @@
 package edu.uga.cs.statecapitalsquiz;
 
+import androidx.annotation.NonNull;
+
 public class Question {
-    private String[] answers;
-    private String correctAnswer;
     private long id;
-    private String selectedAnswer;
+    private String state;
+    private String capital;
+    private String extra1;
+    private String extra2;
 
-    public Question(String[] answers, String correctAnswer, String selectedAnswer) {
-        this.answers = answers;
-        this.correctAnswer = correctAnswer;
+
+    public Question() {
         this.id = -1; //negative until persisted in db
-        this.selectedAnswer = selectedAnswer;
+        this.state = null;
+        this.capital = null;
+        this.extra1 = null;
+        this.extra2 = null;
+    } //constructor
+
+    public Question(String state, String capital, String extra1, String extra2) {
+        this.id = -1; //negative until persisted in db
+        this.state = state;
+        this.capital = capital;
+        this.extra1 = extra1;
+        this.extra2 = extra2;
+    } //constructor
+
+    public long getId() { return id; }
+
+    public void setId(long id) {this.id = id;}
+
+    public String getState() {
+        return state;
     }
 
-    public String[] getAnswers() {
-        return answers;
+    public void setState(String state) { this.state = state; }
+
+    public String getCapital() {
+        return capital;
     }
 
-    public String getCorrectAnswer() {
-        return correctAnswer;
+    public void setCapital(String capital) { this.capital = capital; }
+
+    public String getExtra1() {
+        return extra1;
     }
 
-    public String getSelectedAnswer() {
-        return selectedAnswer;
-    }
+    public void setExtra1(String extra1) { this.extra1 = extra1; }
 
-    public void setAnswers(String[] answers) {
-        this.answers = answers;
-    }
+    public String getExtra2() { return extra2; }
 
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
+    public void setExtra2(String extra2) { this.extra2 = extra2; }
 
-    public void setSelectedAnswer(String selectedAnswer) {
-        this.selectedAnswer = selectedAnswer;
-    }
-}
+    @NonNull
+    public String toString() {
+       return id + ": " + state + ", " + capital + ", " + extra1 + ", " + extra2;
+    }//toString
+
+}//Question
