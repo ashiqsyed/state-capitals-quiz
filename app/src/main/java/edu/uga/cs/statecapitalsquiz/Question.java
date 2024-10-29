@@ -36,9 +36,7 @@ public class Question {
 
     public void setState(String state) { this.state = state; }
 
-    public String getCapital() {
-        return capital;
-    }
+    public String getCapital() { return capital; }
 
     public void setCapital(String capital) { this.capital = capital; }
 
