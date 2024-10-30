@@ -1,5 +1,6 @@
 package edu.uga.cs.statecapitalsquiz;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             Set<Question> questionSet = new HashSet<>(questions);
             Log.d(TAG, "Size of allQuestions is " + questionSet.size());
             Log.d(TAG, "questionSet: " + questionSet);
+
+
 
 
 
