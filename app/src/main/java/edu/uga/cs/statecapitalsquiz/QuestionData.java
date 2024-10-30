@@ -1,5 +1,6 @@
 package edu.uga.cs.statecapitalsquiz;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,7 +24,7 @@ public class QuestionData {
         QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA1,
         QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA2,
         QuizzesDBHelper.QUESTIONS_COLUMN_STATE,
-        QuizzesDBHelper.TABLE_QUESTIONS
+
     };
 
     public QuestionData(Context context) {
@@ -31,6 +32,7 @@ public class QuestionData {
     }
 
     public void open() {
+
         db = questionsDbHelper.getWritableDatabase();
         Log.d(TAG, "Database opened");
     }
@@ -52,6 +54,7 @@ public class QuestionData {
         int column;
 
         try {
+
             c = db.query(QuizzesDBHelper.TABLE_QUESTIONS, columns, null, null, null, null, null);
             if (c != null && c.getCount() > 0) {
                 while(c.moveToNext()) {
@@ -86,5 +89,23 @@ public class QuestionData {
             }
         }
         return questions;
+    }
+
+    public Question storeQuestion(Question q) {
+//        Log.d(TAG, "Question: " + q);
+        if (q == null) {
+            Log.d(TAG, "q is null");
+        }
+        ContentValues val = new ContentValues();
+        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_CAPITAL, q.getCapital());
+        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_STATE, q.getState());
+        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA1, q.getExtra1());
+        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA2, q.getExtra2());
+
+        long id = db.insert(QuizzesDBHelper.TABLE_QUESTIONS, null, val);
+        q.setId(id);
+
+//        Log.d(TAG, "Stored question with id " + id);
+        return q;
     }
 }

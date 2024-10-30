@@ -44,6 +44,7 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate( SQLiteDatabase db ) {
+
         db.execSQL( CREATE_QUESTIONS );
         Log.d( DEBUG_TAG, "Table " + TABLE_QUESTIONS + " created" );
     } //onCreate
