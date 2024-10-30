@@ -19,11 +19,11 @@ public class QuestionData {
     private SQLiteDatabase db;
     private SQLiteOpenHelper questionsDbHelper;
     private static final String[] columns = {
-        QuizzesDBHelper.QUESTIONS_COLUMN_CAPITAL,
-        QuizzesDBHelper.QUESTIONS_COLUMN_ID,
-        QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA1,
-        QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA2,
-        QuizzesDBHelper.QUESTIONS_COLUMN_STATE,
+            QuizzesDBHelper.QUESTIONS_COLUMN_CAPITAL,
+            QuizzesDBHelper.QUESTIONS_COLUMN_ID,
+            QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA1,
+            QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA2,
+            QuizzesDBHelper.QUESTIONS_COLUMN_STATE,
 
     };
 
@@ -32,7 +32,6 @@ public class QuestionData {
     }
 
     public void open() {
-
         db = questionsDbHelper.getWritableDatabase();
         Log.d(TAG, "Database opened");
     }
@@ -49,7 +48,7 @@ public class QuestionData {
     }
 
     public List<Question> getAllQuestions() {
-        ArrayList<Question> questions = new ArrayList<Question>();
+        ArrayList<Question> questions = new ArrayList<>();
         Cursor c = null;
         int column;
 
@@ -95,17 +94,58 @@ public class QuestionData {
 //        Log.d(TAG, "Question: " + q);
         if (q == null) {
             Log.d(TAG, "q is null");
-        }
-        ContentValues val = new ContentValues();
-        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_CAPITAL, q.getCapital());
-        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_STATE, q.getState());
-        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA1, q.getExtra1());
-        val.put(QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA2, q.getExtra2());
+        } else {
+            List<Question> questions = getAllQuestions();
+            String qState = q.getState();
+            for (int i = 0; i < questions.size(); i++){
+                if (qState.equals(questions.get(i).getState())) {
+                    return null;
+                } //if
+            }//for
 
-        long id = db.insert(QuizzesDBHelper.TABLE_QUESTIONS, null, val);
-        q.setId(id);
+            ContentValues val = new ContentValues();
+            val.put(QuizzesDBHelper.QUESTIONS_COLUMN_CAPITAL, q.getCapital());
+            val.put(QuizzesDBHelper.QUESTIONS_COLUMN_STATE, q.getState());
+            val.put(QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA1, q.getExtra1());
+            val.put(QuizzesDBHelper.QUESTIONS_COLUMN_EXTRA2, q.getExtra2());
 
+            long id = db.insert(QuizzesDBHelper.TABLE_QUESTIONS, null, val);
+            q.setId(id);
+        }//else
 //        Log.d(TAG, "Stored question with id " + id);
         return q;
-    }
-}
+    }//storeQuestion
+
+    /**
+     * Resets the questions table to clear any access data.
+     */
+    public void resetTable () {
+        db.execSQL("drop table if exists questions");
+        db.execSQL("create table questions (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " state TEXT, capital TEXT, extra1 TEXT, extra2 TEXT)");
+    } // resetDB
+
+    /**
+     * Checks to see if the table exists returns true if it does and false if it does not.
+     * @return true if table exists and false if not.
+     */
+    boolean tableExists() {
+        if (db == null || !db.isOpen())
+        {
+            return false;
+        }
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?",
+                new String[] {"table", "questions"}
+        );
+        if (!cursor.moveToFirst())
+        {
+            cursor.close();
+            return false;
+        }
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count > 0;
+    } //tableExists
+
+}//QuestionData

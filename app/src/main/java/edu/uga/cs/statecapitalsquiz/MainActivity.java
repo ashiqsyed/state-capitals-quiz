@@ -43,29 +43,27 @@ public class MainActivity extends AppCompatActivity {
             InputStream stream = getAssets().open("state_capitals.csv");
             CSVReader csvReader = new CSVReader(new InputStreamReader(stream));
             String[] nextRow = csvReader.readNext(); //lets the csvreader skip the first line which is the structure of csv lines
-            QuestionDBWriter writer = new QuestionDBWriter();
             questionData = new QuestionData(getBaseContext());
             questionData.open();
-            while ((nextRow = csvReader.readNext()) != null) {
-                TextView tv = new TextView(getBaseContext());
-                String state = nextRow[0];
-                String capital = nextRow[1];
-                String extra1 = nextRow[2];
-                String extra2 = nextRow[3];
-                tv.setText(capital + ", " + state);
-                layout.addView(tv);
+            if(!questionData.tableExists()) {
+                while ((nextRow = csvReader.readNext()) != null) {
+                    TextView tv = new TextView(getBaseContext());
+                    String state = nextRow[0];
+                    String capital = nextRow[1];
+                    String extra1 = nextRow[2];
+                    String extra2 = nextRow[3];
+                    //tv.setText(capital + ", " + state);
+                    //layout.addView(tv);
 
-                question = new Question(state, capital, extra1, extra2);
+                    question = new Question(state, capital, extra1, extra2);
 
+                    new QuestionDBWriter().execute(question);
 
-                writer.execute(question);
-
-            }
+                }// while
+            }//if
             List<Question> questions = questionData.getAllQuestions();
-            Set<Question> questionSet = new HashSet<>(questions);
-            Log.d(TAG, "Size of allQuestions is " + questionSet.size());
-            Log.d(TAG, "questionSet: " + questionSet);
-
+            Log.d(TAG, "Size of allQuestions is " + questions.size());
+            Log.d(TAG, "questionSet: " + questions);
 
 
 
@@ -82,16 +80,26 @@ public class MainActivity extends AppCompatActivity {
 //            Log.d(TAG, "In QuestionDBWriter: " + questions[0]);
             questionData.storeQuestion(questions[0]);
             return questions[0];
-        }
+        }//doInBackground
 
         @Override
         protected void onPostExecute(Question question) {
 //            Log.d(TAG, "Question added to database");
-        }
-    }
+        }//onPostExecute
+    }//QuestionDBWriter
 
     @Override
     public void onResume() {
         super.onResume();
-    }
-}
+    }//onResume
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (questionData != null) {
+            questionData.close();
+        }
+    }//onPause
+
+
+} //MainActivity

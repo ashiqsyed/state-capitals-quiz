@@ -32,7 +32,6 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
 
     private QuizzesDBHelper( Context context ) {
         super( context, DB_NAME, null, DB_VERSION );
-
     } //constructor
 
     public static synchronized QuizzesDBHelper getInstance( Context context ) {
@@ -45,7 +44,6 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate( SQLiteDatabase db ) {
-        db.execSQL("drop table if exists " + TABLE_QUESTIONS);
         db.execSQL( CREATE_QUESTIONS );
         Log.d( DEBUG_TAG, "Table " + TABLE_QUESTIONS + " created" );
     } //onCreate
