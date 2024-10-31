@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
             String[] nextRow = csvReader.readNext(); //lets the csvreader skip the first line which is the structure of csv lines
             questionData = new QuestionData(getBaseContext());
             questionData.open();
-            if(!questionData.tableExists()) {
+            List<Question> questions = questionData.getAllQuestions();
+            if(questions.size() != 50) {
                 while ((nextRow = csvReader.readNext()) != null) {
                     TextView tv = new TextView(getBaseContext());
                     String state = nextRow[0];
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }// while
             }//if
-            List<Question> questions = questionData.getAllQuestions();
+            questions = questionData.getAllQuestions();
             Log.d(TAG, "Size of allQuestions is " + questions.size());
             Log.d(TAG, "questionSet: " + questions);
 

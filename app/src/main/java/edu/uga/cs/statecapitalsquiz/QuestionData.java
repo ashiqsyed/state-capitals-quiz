@@ -125,27 +125,5 @@ public class QuestionData {
                 " state TEXT, capital TEXT, extra1 TEXT, extra2 TEXT)");
     } // resetDB
 
-    /**
-     * Checks to see if the table exists returns true if it does and false if it does not.
-     * @return true if table exists and false if not.
-     */
-    boolean tableExists() {
-        if (db == null || !db.isOpen())
-        {
-            return false;
-        }
-        Cursor cursor = db.rawQuery(
-                "SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?",
-                new String[] {"table", "questions"}
-        );
-        if (!cursor.moveToFirst())
-        {
-            cursor.close();
-            return false;
-        }
-        int count = cursor.getInt(0);
-        cursor.close();
-        return count > 0;
-    } //tableExists
 
 }//QuestionData
