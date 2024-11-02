@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 public class QuizActivity extends AppCompatActivity {
-
+    private final String TAG = "QuizActivity.java";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +29,17 @@ public class QuizActivity extends AppCompatActivity {
         });
         List<Question> questions = quizSetup();
         ViewPager2 viewpager = findViewById(R.id.viewpager);
+
+        //used to globally keep track of numQuestionsAnswered and score for conditional rendering and score to put into quiz obj
+        int numQuestionsAnswered = 0;
+        int numQuestionsCorrect = 0;
+
         QuestionsPagerAdapter questionsAdapter = new QuestionsPagerAdapter(getSupportFragmentManager(),
-                getLifecycle(), questions);
+                getLifecycle(), questions, numQuestionsAnswered, numQuestionsCorrect);
         viewpager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewpager.setAdapter(questionsAdapter);
+        Log.d(TAG, "There are " + questionsAdapter.getItemCount() + " questions");
+
     }
 
     private List<Question> quizSetup() {
@@ -48,6 +55,7 @@ public class QuizActivity extends AppCompatActivity {
                 allQuestions.remove(i);
             } // while
             questionData.close();
+            quizQuestions.add(new Question()); //used for the last swipe to view results
             return quizQuestions;
         } else {
             Log.d("QuizActivity.java", "questions is null");

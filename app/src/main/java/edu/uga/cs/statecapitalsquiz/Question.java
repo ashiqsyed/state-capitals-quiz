@@ -8,6 +8,7 @@ public class Question {
     private String capital;
     private String extra1;
     private String extra2;
+    private String selectedAnswer;
 
 
     public Question() {
@@ -16,6 +17,7 @@ public class Question {
         this.capital = null;
         this.extra1 = null;
         this.extra2 = null;
+        this.selectedAnswer = null;
     } //constructor
 
     public Question(String state, String capital, String extra1, String extra2) {
@@ -49,6 +51,14 @@ public class Question {
     public String getExtra2() { return extra2; }
 
     public void setExtra2(String extra2) { this.extra2 = extra2; }
+
+    public String getSelectedAnswer() {
+        return selectedAnswer;
+    }
+
+    public void setSelectedAnswer(String selectedAnswer) {
+        this.selectedAnswer = selectedAnswer;
+    }
 
     @NonNull
     public String toString() {

@@ -77,6 +77,8 @@ public class Quiz {
 
     public void setDate(String date) { this.date = date; }
 
+
+
     @NonNull
     public String toString() {
         return id + ": " + question1 + ", " + question2 + ", " + question3 + ", " + question4
