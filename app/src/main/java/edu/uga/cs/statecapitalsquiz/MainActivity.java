@@ -18,12 +18,13 @@ import com.opencsv.CSVReader;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Serializable {
     private final String TAG = "MainActivity.java";
 
     private QuestionData questionData = null;
@@ -50,13 +51,10 @@ public class MainActivity extends AppCompatActivity {
             List<Question> questions = questionData.getAllQuestions();
             if(questions.size() != 50) {
                 while ((nextRow = csvReader.readNext()) != null) {
-                    TextView tv = new TextView(getBaseContext());
                     String state = nextRow[0];
                     String capital = nextRow[1];
                     String extra1 = nextRow[2];
                     String extra2 = nextRow[3];
-                    //tv.setText(capital + ", " + state);
-                    //layout.addView(tv);
 
                     question = new Question(state, capital, extra1, extra2);
 
@@ -65,11 +63,13 @@ public class MainActivity extends AppCompatActivity {
                 }// while
             }//if
             questions = questionData.getAllQuestions();
+            final List<Question> Q = questions;
             Log.d(TAG, "Size of allQuestions is " + questions.size());
             Log.d(TAG, "questionSet: " + questions);
 
             Button button = findViewById(R.id.button);
             button.setOnClickListener((view) -> {
+                questionData.close();
                 Intent intent = new Intent(view.getContext(), QuizActivity.class);
                 startActivity(intent);
             });
