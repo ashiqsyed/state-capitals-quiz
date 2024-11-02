@@ -10,7 +10,7 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
     private static final String DEBUG_TAG = "QuizzesDBHelper";
 
     private static final String DB_NAME = "Quizzes.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public static final String TABLE_QUESTIONS = "questions";
     public static final String QUESTIONS_COLUMN_ID = "_id";

@@ -1,8 +1,10 @@
 package edu.uga.cs.statecapitalsquiz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         Log.d(TAG, "MainActivity.onCreate()");
-        LinearLayout layout = findViewById(R.id.main);
+
         try {
             InputStream stream = getAssets().open("state_capitals.csv");
             CSVReader csvReader = new CSVReader(new InputStreamReader(stream));
@@ -65,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
             questions = questionData.getAllQuestions();
             Log.d(TAG, "Size of allQuestions is " + questions.size());
             Log.d(TAG, "questionSet: " + questions);
+
+            Button button = findViewById(R.id.button);
+            button.setOnClickListener((view) -> {
+                Intent intent = new Intent(view.getContext(), QuizActivity.class);
+                startActivity(intent);
+            });
+
 
 
 
