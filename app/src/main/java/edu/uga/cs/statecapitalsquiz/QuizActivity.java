@@ -53,6 +53,7 @@ public class QuizActivity extends AppCompatActivity {
                 allQuestions.remove(i);
             } // while
             questionData.close();
+            quizQuestions.add(new Question());
             return quizQuestions;
         } else {
             Log.d("QuizActivity.java", "questions is null");

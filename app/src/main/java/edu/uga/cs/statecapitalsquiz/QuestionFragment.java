@@ -2,9 +2,12 @@ package edu.uga.cs.statecapitalsquiz;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -56,8 +59,34 @@ public class QuestionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (numQuestionsAnswered == 6) {
-            return inflater.inflate(R.layout.fragment_results, container, false);
+        if (numQuestionsAnswered == 5) {
+//            return inflater.inflate(R.layout.fragment_results, container, false);
+            Log.d(TAG, "check");
+            LinearLayout layout = new LinearLayout(getActivity());
+            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 500, getActivity().getResources().getDisplayMetrics());
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+
+            TextView resultsText = new TextView(getActivity());
+            int font = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 28, getActivity().getResources().getDisplayMetrics());
+            resultsText.setTextSize(font);
+            resultsText.setText("Results");
+            resultsText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            layout.addView(resultsText);
+
+            int font2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getActivity().getResources().getDisplayMetrics());
+
+            TextView scoreText = new TextView(getActivity());
+            scoreText.setTextSize(font2);
+            scoreText.setText("Your score is " + numQuestionsCorrect + "/6");
+            layout.addView(scoreText);
+
+            TextView dateText = new TextView(getActivity());
+            dateText.setText("Quiz completed on " + Calendar.getInstance().getTime().toString());
+            dateText.setTextSize(font2);
+            layout.addView(dateText);
+            return layout;
+
         }
         return inflater.inflate(R.layout.fragment_question, container, false);
     }
@@ -91,81 +120,30 @@ public class QuestionFragment extends Fragment {
                 c2.setText(answers.get(1));
                 c3.setText(answers.get(2));
             }
-        } else {
 
-        }
-
-
-            Log.d(TAG, "questionNum: " + questionNum);
-
-
-        /*
-        RadioGroup radioGroup = view.findViewById(R.id.radioGroup2);
-        if (radioGroup != null) {
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                    if (i != -1) {
-                        RadioButton button = view.findViewById(i);
-
-                        if (button != null) {
-                            selectedAnswer = button.getText().toString();
-                            if (selectedAnswer.equals(questions.get(questionNum).getCapital())) {
-                                Log.d(TAG, selectedAnswer + " is the capital.");
-                                numQuestionsCorrect++;
-
-
-                            } else {
-                                Log.d(TAG, selectedAnswer + " is not the capital.");
+            RadioGroup radioGroup = view.findViewById(R.id.radioGroup2);
+            if (radioGroup != null) {
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                        if (i != -1) {
+                            RadioButton button = view.findViewById(i);
+                            if (button != null) {
+                                selectedAnswer = button.getText().toString();
                             }
-                            numQuestionsAnswered++;
-                            if (numQuestionsAnswered == 6) { //quiz is over when numQuestionsAnswered == 6
-                                Quiz completedQuiz = new Quiz(); //create quiz object to store in database
-                                completedQuiz.setQuestion1(questions.get(0).getId());
-                                completedQuiz.setQuestion2(questions.get(1).getId());
-                                completedQuiz.setQuestion3(questions.get(2).getId());
-                                completedQuiz.setQuestion4(questions.get(3).getId());
-                                completedQuiz.setQuestion5(questions.get(4).getId());
-                                completedQuiz.setQuestion6(questions.get(5).getId());
-                                completedQuiz.setScore(numQuestionsCorrect);
-                                completedQuiz.setDate(Calendar.getInstance().getTime().toString());
-
-                                Log.d(TAG, "Quiz completed at " + completedQuiz.getDate()
-                                        + " with score " + completedQuiz.getScore());
-                                Log.d(TAG, "questionNum is " + questionNum);
-                                if (questionNum + 1 == 6) {
-
-                                    if (date == null && score == null) {
-                                        Log.e(TAG, "date and score strings are both null");
-                                    }
-                                    if (date != null && score != null) {
-                                        date.setText("Quiz completed on " + completedQuiz.getDate());
-                                        score.setText("Your score is: " + completedQuiz.getScore() + "/6");
-                                    }
-                                }
-
-
-
-                                //add code to store the quiz in quiz table
-
-
-
-                            }
-
-                            //temporary(?) solution for handling numQuestionsAnswered
-                            c1.setEnabled(false);
-                            c2.setEnabled(false);
-                            c3.setEnabled(false);
-
-
                         }
-
-
                     }
-                }
-            });
+                });
         }
-         */
+
+
+        Log.d(TAG, "questionNum: " + questionNum);
+
+
+
+
+        }
+
 
 
     }
@@ -173,6 +151,16 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG, "numQuestionsAnswered is " + numQuestionsAnswered);
+        if (selectedAnswer.equals(questions.get(questionNum).getCapital())) {
+            Log.d(TAG, selectedAnswer + " is the capital.");
+            numQuestionsCorrect++;
+            Log.d(TAG, "Score: " + numQuestionsCorrect);
+
+        } else {
+            Log.d(TAG, selectedAnswer + " is not the capital.");
+        }
+        numQuestionsAnswered++;
 
     }
 
