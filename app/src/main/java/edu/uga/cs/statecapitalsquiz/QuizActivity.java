@@ -16,6 +16,7 @@ import java.util.Random;
 
 public class QuizActivity extends AppCompatActivity {
     private final String TAG = "QuizActivity.java";
+    private ViewPager2 viewpager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +29,13 @@ public class QuizActivity extends AppCompatActivity {
             return insets;
         });
         List<Question> questions = quizSetup();
-        ViewPager2 viewpager = findViewById(R.id.viewpager);
-
-        //used to globally keep track of numQuestionsAnswered and score for conditional rendering and score to put into quiz obj
-        int numQuestionsAnswered = 0;
-        int numQuestionsCorrect = 0;
+        viewpager = findViewById(R.id.viewpager);
 
         QuestionsPagerAdapter questionsAdapter = new QuestionsPagerAdapter(getSupportFragmentManager(),
-                getLifecycle(), questions, numQuestionsAnswered, numQuestionsCorrect);
+                getLifecycle(), questions);
         viewpager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewpager.setAdapter(questionsAdapter);
+        viewpager.registerOnPageChangeCallback(listener);
         Log.d(TAG, "There are " + questionsAdapter.getItemCount() + " questions");
 
     }
@@ -55,7 +53,6 @@ public class QuizActivity extends AppCompatActivity {
                 allQuestions.remove(i);
             } // while
             questionData.close();
-            quizQuestions.add(new Question()); //used for the last swipe to view results
             return quizQuestions;
         } else {
             Log.d("QuizActivity.java", "questions is null");
@@ -63,4 +60,20 @@ public class QuizActivity extends AppCompatActivity {
             return null;
         } // else
     } //quizSetup
+
+    private ViewPager2.OnPageChangeCallback listener = new ViewPager2.OnPageChangeCallback() {
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            if (position == 7) {
+                viewpager.setUserInputEnabled(false);
+            } //if
+        } //onPageSelected
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewpager.unregisterOnPageChangeCallback(listener);
+    }
 }

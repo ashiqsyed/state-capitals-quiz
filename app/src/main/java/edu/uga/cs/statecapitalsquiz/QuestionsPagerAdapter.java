@@ -9,22 +9,19 @@ import java.util.List;
 
 public class QuestionsPagerAdapter extends FragmentStateAdapter {
     private List<Question> questions;
-    private int numQuestionsAnswered;
-    private int numQuestionsCorrect;
 
-    public QuestionsPagerAdapter(FragmentManager fragmentManager, Lifecycle lifecycle, List<Question> q, int numQuestionsAnswered, int numQuestionsCorrect) {
+    public QuestionsPagerAdapter(FragmentManager fragmentManager, Lifecycle lifecycle, List<Question> q) {
         super(fragmentManager, lifecycle);
         this.questions = q;
-        this.numQuestionsAnswered = numQuestionsAnswered;
-        this.numQuestionsCorrect = numQuestionsCorrect;
     }
 
+
     public Fragment createFragment(int numQuestion) {
-        return QuestionFragment.newInstance(numQuestion, questions, numQuestionsAnswered, numQuestionsCorrect);
+        return QuestionFragment.newInstance(numQuestion, questions);
     }
 
     public int getItemCount() {
-        return QuestionFragment.getNumOfQuestions();
+        return 7;
     }
 
 }

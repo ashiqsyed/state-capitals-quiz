@@ -36,15 +36,12 @@ public class QuestionFragment extends Fragment {
 
     }
 
-    public static QuestionFragment newInstance(int questionNum, List<Question> q, int numQuestionsAnswered, int numQuestionsCorrect) {
+    public static QuestionFragment newInstance(int questionNum, List<Question> q) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
         args.putInt("questionNum", questionNum);
         fragment.setArguments(args);
         questions = q;
-        numQuestionsAnswered = numQuestionsAnswered;
-        numQuestionsCorrect = numQuestionsCorrect;
-
         return fragment;
     }
 
@@ -54,6 +51,7 @@ public class QuestionFragment extends Fragment {
         if (getArguments() != null) {
             questionNum = getArguments().getInt("questionNum");
         }
+        Log.d(TAG, "onCreate");
     }
 
     @Override
@@ -66,35 +64,42 @@ public class QuestionFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView tv = view.findViewById(R.id.question);
-        String text = "Question  " + (questionNum + 1) + "\n\nThe capital of "
-            + questions.get(questionNum).getState() + " is: ";
-        if (tv != null) {
-            tv.setText(text);
+
+        if (questionNum < 6) {
+            TextView tv = view.findViewById(R.id.question);
+            String text = "Question  " + (questionNum + 1) + "\n\nThe capital of "
+                    + questions.get(questionNum).getState() + " is: ";
+            if (tv != null) {
+                tv.setText(text);
+            }
+            date = view.findViewById(R.id.date);
+            score = view.findViewById(R.id.score);
+
+            RadioButton c1 = view.findViewById(R.id.choice1);
+            RadioButton c2 = view.findViewById(R.id.choice2);
+            RadioButton c3 = view.findViewById(R.id.choice3);
+
+            List<String> answers = new ArrayList<String>();
+            answers.add(questions.get(questionNum).getCapital());
+            answers.add(questions.get(questionNum).getExtra1());
+            answers.add(questions.get(questionNum).getExtra2());
+
+            Collections.shuffle(answers);
+
+            if (c1 != null && c2 != null && c3 != null) {
+                c1.setText(answers.get(0));
+                c2.setText(answers.get(1));
+                c3.setText(answers.get(2));
+            }
+        } else {
+
         }
-        date = view.findViewById(R.id.date);
-        score = view.findViewById(R.id.score);
-
-        RadioButton c1 = view.findViewById(R.id.choice1);
-        RadioButton c2 = view.findViewById(R.id.choice2);
-        RadioButton c3 = view.findViewById(R.id.choice3);
-
-        List<String> answers = new ArrayList<String>();
-        answers.add(questions.get(questionNum).getCapital());
-        answers.add(questions.get(questionNum).getExtra1());
-        answers.add(questions.get(questionNum).getExtra2());
-
-        Collections.shuffle(answers);
-
-        if (c1 != null && c2 != null && c3 != null) {
-            c1.setText(answers.get(0));
-            c2.setText(answers.get(1));
-            c3.setText(answers.get(2));
-        }
 
 
-        Log.d(TAG, "questionNum: " + questionNum);
+            Log.d(TAG, "questionNum: " + questionNum);
 
+
+        /*
         RadioGroup radioGroup = view.findViewById(R.id.radioGroup2);
         if (radioGroup != null) {
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -125,7 +130,8 @@ public class QuestionFragment extends Fragment {
                                 completedQuiz.setScore(numQuestionsCorrect);
                                 completedQuiz.setDate(Calendar.getInstance().getTime().toString());
 
-                                Log.d(TAG, "Quiz completed at " + completedQuiz.getDate() + " with score " + completedQuiz.getScore());
+                                Log.d(TAG, "Quiz completed at " + completedQuiz.getDate()
+                                        + " with score " + completedQuiz.getScore());
                                 Log.d(TAG, "questionNum is " + questionNum);
                                 if (questionNum + 1 == 6) {
 
@@ -159,8 +165,14 @@ public class QuestionFragment extends Fragment {
                 }
             });
         }
+         */
 
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
 
     }
 
@@ -186,15 +198,6 @@ public class QuestionFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 //        Log.d(TAG, "onDetach callback");
-    }
-
-    public static int getNumOfQuestions() {
-        if (questions != null) {
-            return questions.size();
-        } else {
-            return 7;
-        }
-//        return questions.size();
     }
 
 }
