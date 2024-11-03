@@ -32,8 +32,6 @@ public class QuestionFragment extends Fragment {
     public final String TAG = "QuestionFragment";
     private static int numQuestionsAnswered;
     private static int numQuestionsCorrect;
-    private TextView date;
-    private TextView score;
 
     public QuestionFragment() {
 
@@ -60,11 +58,12 @@ public class QuestionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (numQuestionsAnswered == 5) {
-//            return inflater.inflate(R.layout.fragment_results, container, false);
+
             Log.d(TAG, "check");
             LinearLayout layout = new LinearLayout(getActivity());
-            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 500, getActivity().getResources().getDisplayMetrics());
+//            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 500, getActivity().getResources().getDisplayMetrics());
             layout.setOrientation(LinearLayout.VERTICAL);
+
 
 
             TextView resultsText = new TextView(getActivity());
@@ -101,8 +100,8 @@ public class QuestionFragment extends Fragment {
             if (tv != null) {
                 tv.setText(text);
             }
-            date = view.findViewById(R.id.date);
-            score = view.findViewById(R.id.score);
+//            date = view.findViewById(R.id.date);
+//            score = view.findViewById(R.id.score);
 
             RadioButton c1 = view.findViewById(R.id.choice1);
             RadioButton c2 = view.findViewById(R.id.choice2);

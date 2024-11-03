@@ -74,6 +74,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 startActivity(intent);
             });
 
+            Button viewResultsButton = findViewById(R.id.button2);
+            viewResultsButton.setOnClickListener((view) -> {
+                Intent intent = new Intent(view.getContext(), ViewQuizzesActivity.class);
+                startActivity(intent);
+            });
+
 
 
 
