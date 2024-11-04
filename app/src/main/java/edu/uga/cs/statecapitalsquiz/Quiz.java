@@ -13,6 +13,7 @@ public class Quiz {
     private long question6;
     private long score;
     private String date;
+    private long currentQuestion;
 
 
     public Quiz() {
@@ -28,7 +29,7 @@ public class Quiz {
     } //constructor
 
     public Quiz(long question1, long question2, long question3, long question4,
-                long question5, long question6, long score, String date) {
+                long question5, long question6, long score, String date, long  currentQuestion) {
         this.id = -1; //negative until persisted in db
         this.question1 = question1;
         this.question2 = question2;
@@ -38,6 +39,7 @@ public class Quiz {
         this.question6 = question6;
         this.score = score;
         this.date = date;
+        this.currentQuestion = currentQuestion;
     } //constructor
 
 
@@ -77,11 +79,13 @@ public class Quiz {
 
     public void setDate(String date) { this.date = date; }
 
+    public long getCurrentQuestion() { return currentQuestion; }
 
+    public void setCurrentQuestion(long currentQuestion) { this.currentQuestion = currentQuestion; }
 
     @NonNull
     public String toString() {
         return id + ": " + question1 + ", " + question2 + ", " + question3 + ", " + question4
-                + question5 + ", " + question6 + ", " + score + ", " + date;
+                + question5 + ", " + question6 + ", " + score + ", " + date + ", " + currentQuestion;
     }//toString
 } //Quiz

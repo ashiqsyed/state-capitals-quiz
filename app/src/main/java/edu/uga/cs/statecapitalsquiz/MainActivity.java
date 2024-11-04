@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private final String TAG = "MainActivity.java";
 
     private QuestionData questionData = null;
-    private Question question;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,20 +49,20 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             questionData.open();
             List<Question> questions = questionData.getAllQuestions();
             if(questions.size() != 50) {
+
                 while ((nextRow = csvReader.readNext()) != null) {
                     String state = nextRow[0];
                     String capital = nextRow[1];
                     String extra1 = nextRow[2];
                     String extra2 = nextRow[3];
 
-                    question = new Question(state, capital, extra1, extra2);
+                    Question question = new Question(state, capital, extra1, extra2);
 
                     new QuestionDBWriter().execute(question);
 
                 }// while
+                questions = questionData.getAllQuestions();
             }//if
-            questions = questionData.getAllQuestions();
-            final List<Question> Q = questions;
             Log.d(TAG, "Size of allQuestions is " + questions.size());
             Log.d(TAG, "questionSet: " + questions);
 

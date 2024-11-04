@@ -10,7 +10,7 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
     private static final String DEBUG_TAG = "QuizzesDBHelper";
 
     private static final String DB_NAME = "Quizzes.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public static final String TABLE_QUESTIONS = "questions";
     public static final String QUESTIONS_COLUMN_ID = "_id";
@@ -29,6 +29,7 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
     public static final String QUIZZES_COLUMN_QUESTION6 = "question6";
     public static final String QUIZZES_COLUMN_SCORE = "score";
     public static final String QUIZZES_COLUMN_DATE = "date";
+    public static final String QUIZZES_COLUMN_CURRENT = "current";
 
 
     private static QuizzesDBHelper helperInstance;
@@ -40,7 +41,7 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
                     + QUESTIONS_COLUMN_STATE + " TEXT, "
                     + QUESTIONS_COLUMN_CAPITAL + " TEXT, "
                     + QUESTIONS_COLUMN_EXTRA1 + " TEXT, "
-                    + QUESTIONS_COLUMN_EXTRA2 + " TEXT" + ")";
+                    + QUESTIONS_COLUMN_EXTRA2 + " TEXT)";
 
     private static final String CREATE_QUIZZES =
             "create table " + TABLE_QUIZZES + " ("
@@ -52,7 +53,8 @@ public class QuizzesDBHelper extends SQLiteOpenHelper {
                     + QUIZZES_COLUMN_QUESTION5 + " INTEGER, "
                     + QUIZZES_COLUMN_QUESTION6 + " INTEGER, "
                     + QUIZZES_COLUMN_SCORE + " INTEGER, "
-                    + QUIZZES_COLUMN_DATE + " TEXT" + ")";
+                    + QUIZZES_COLUMN_DATE + " TEXT, "
+                    + QUIZZES_COLUMN_CURRENT + " INTEGER" + ")";
 
 
     private QuizzesDBHelper( Context context ) {
