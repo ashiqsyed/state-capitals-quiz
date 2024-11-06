@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements Serializable {
+public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity.java";
 
     private QuestionData questionData = null;
@@ -115,6 +116,5 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             questionData.close();
         }
     }//onPause
-
 
 } //MainActivity

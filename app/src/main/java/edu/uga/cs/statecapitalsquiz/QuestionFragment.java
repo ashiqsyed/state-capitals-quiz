@@ -1,8 +1,10 @@
 package edu.uga.cs.statecapitalsquiz;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TimeUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import org.apache.commons.logging.LogFactory;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,15 +30,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class QuestionFragment extends Fragment {
+    private static final org.apache.commons.logging.Log log = LogFactory.getLog(QuestionFragment.class);
     private int questionNum;
     private static List<Question> questions;
     private String selectedAnswer;
     public final String TAG = "QuestionFragment";
-    private static int numQuestionsAnswered;
     private static int numQuestionsCorrect;
     private QuizData quizData;
+    private View view;
+    private TextView resultText;
 
     public QuestionFragment() {
 
@@ -60,9 +67,8 @@ public class QuestionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (numQuestionsAnswered == 5) {
+        if (questionNum == 6) {
 
-            Log.d(TAG, "check");
             LinearLayout layout = new LinearLayout(getActivity());
             layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -78,40 +84,29 @@ public class QuestionFragment extends Fragment {
             int font2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                     14, getActivity().getResources().getDisplayMetrics());
 
-            TextView resultText = new TextView(getActivity());
+            resultText = new TextView(getActivity());
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(10,10,10,10);
 
+
+
             resultText.setTextSize(font2);
             resultText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             resultText.setLayoutParams(params);
-            String resultString = "Your score is " + numQuestionsCorrect + "/6";
-            String dateString = Calendar.getInstance().getTime().toString();
-            String completionString = "\n\nQuiz completed on: " + dateString;
-            resultString = resultString + completionString;
-            resultText.setText(resultString);
             layout.addView(resultText);
 
-            quizData = new QuizData(getActivity().getBaseContext());
-            quizData.open();
-            long q1 = questions.get(0).getId();
-            long q2 = questions.get(1).getId();
-            long q3 = questions.get(2).getId();
-            long q4 = questions.get(3).getId();
-            long q5 = questions.get(4).getId();
-            long q6 = questions.get(5).getId();
-            Quiz quiz = new Quiz(q1, q2, q3, q4, q5, q6, numQuestionsCorrect, dateString, numQuestionsAnswered);
-            new QuizDBWriter().execute(quiz);
 
             return layout;
+
         }
         return inflater.inflate(R.layout.fragment_question, container, false);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.view = view;
 
         if (questionNum < 6) {
             TextView tv = view.findViewById(R.id.question);
@@ -163,23 +158,30 @@ public class QuestionFragment extends Fragment {
         protected Quiz doInBackground(Quiz... quizzes) {
 
 //            Log.d(TAG, "In QuestionDBWriter: " + questions[0]);
-            quizData.storeQuiz(quizzes[0]);
+            quizData.updateQuiz(quizzes[0]);
             return quizzes[0];
         }//doInBackground
 
         @Override
         protected void onPostExecute(Quiz quiz) {
-//            Log.d(TAG, "Question added to database");
+            quizData.close();
         }//onPostExecute
     }//QuestionDBWriter
 
     @Override
     public void onPause() {
         super.onPause();
+        quizData = new QuizData(view.getContext());
+        quizData.open();
+        Quiz quiz = quizData.getCurrentQuiz();
+        int numQuestionsAnswered = (int) quiz.getCurrentQuestion();
+        numQuestionsCorrect = (int) quiz.getScore();
+
         if(selectedAnswer != null) {
             Log.d(TAG, "numQuestionsAnswered is " + numQuestionsAnswered);
             if (selectedAnswer.equals(questions.get(questionNum).getCapital())) {
                 Log.d(TAG, selectedAnswer + " is the capital.");
+
                 numQuestionsCorrect++;
                 Log.d(TAG, "Score: " + numQuestionsCorrect);
 
@@ -189,35 +191,33 @@ public class QuestionFragment extends Fragment {
             numQuestionsAnswered++;
         } // if
 
-        if (quizData != null) {
+        quiz.setCurrentQuestion(numQuestionsAnswered);
+        quiz.setScore(numQuestionsCorrect);
+        if(questionNum < 5) {
+            new QuizDBWriter().execute(quiz);
+        } else {
+            quizData.updateQuiz(quiz);
             quizData.close();
         }
-
-
     } // onPause
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        Log.d(TAG, "onDestroy() callback");
-    }
+    public void onResume() {
+        super.onResume();
+        if(resultText != null) {
+            quizData = new QuizData(view.getContext());
+            quizData.open();
+            Quiz quiz = quizData.getCurrentQuiz();
+            numQuestionsCorrect = (int) quiz.getScore();
+            String dateString = Calendar.getInstance().getTime().toString();
+            quiz.setDate(dateString);
+            String resultString = "Your score is " + numQuestionsCorrect + "/6";
+            String completionString = "\n\nQuiz completed on: " + dateString;
+            resultString = resultString + completionString;
+            resultText.setText(resultString);
+            new QuizDBWriter().execute(quiz);
+        } //if
+    } //onResume
 
-    @Override
-    public void onStop() {
-        super.onStop();
-//        Log.d(TAG, "onStop() callback");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        Log.d(TAG, "onDestroyView() callback");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-//        Log.d(TAG, "onDetach callback");
-    }
 
 }

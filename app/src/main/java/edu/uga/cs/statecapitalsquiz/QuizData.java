@@ -146,8 +146,7 @@ public class QuizData {
             val.put(QuizzesDBHelper.QUIZZES_COLUMN_DATE, q.getDate());
             val.put(QuizzesDBHelper.QUIZZES_COLUMN_CURRENT, q.getCurrentQuestion());
             db.update(QuizzesDBHelper.TABLE_QUIZZES, val,
-                    "SELECT * FROM " + QuizzesDBHelper.TABLE_QUIZZES + " ORDER BY _id DESC "
-                            + "LIMIT 1", null);
+                     "_id = (select * from (select max(_id) from quizzes) as t)", null);
         } // else
     } //updateQuiz
 
@@ -158,6 +157,7 @@ public class QuizData {
             c = db.rawQuery("SELECT * FROM " + QuizzesDBHelper.TABLE_QUIZZES + " ORDER BY _id DESC "
                     + "LIMIT 1", null);
             if (c != null && c.getCount() > 0) {
+                c.moveToFirst();
                 column = c.getColumnIndex(QuizzesDBHelper.QUIZZES_COLUMN_ID);
                 long id = c.getLong(column);
                 column = c.getColumnIndex(QuizzesDBHelper.QUIZZES_COLUMN_QUESTION1);

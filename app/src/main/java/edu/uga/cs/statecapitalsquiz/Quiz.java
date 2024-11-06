@@ -26,6 +26,7 @@ public class Quiz {
         this.question6 = -1;
         this.score = 0;
         this.date = null;
+        this.currentQuestion = 0;
     } //constructor
 
     public Quiz(long question1, long question2, long question3, long question4,

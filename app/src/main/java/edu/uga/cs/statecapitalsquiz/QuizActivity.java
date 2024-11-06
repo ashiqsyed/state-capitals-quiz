@@ -1,9 +1,11 @@
 package edu.uga.cs.statecapitalsquiz;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -32,32 +34,48 @@ public class QuizActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        List<Question> questions = quizSetup();
+
+        List<Question> quizQuestions = new ArrayList<>();
+
+        if (savedInstanceState != null) {
+            QuestionData questionData = new QuestionData(getBaseContext());
+            questionData.open();
+            List<Question> allQuestions = questionData.getAllQuestions();
+            questionData.close();
+            if(allQuestions != null) {
+
+                while (quizQuestions.size() < 6) {
+                    String key = "question" + (quizQuestions.size() + 1);
+                    long i = savedInstanceState.getLong(key);
+                    quizQuestions.add(allQuestions.get((int) i));
+                } // while
+            }
+        } else {
+            quizQuestions = quizSetup();
+        }
+
         viewpager = findViewById(R.id.viewpager);
         QuestionsPagerAdapter questionsAdapter = new QuestionsPagerAdapter(getSupportFragmentManager(),
-                getLifecycle(), questions);
+                getLifecycle(), quizQuestions);
         viewpager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewpager.setAdapter(questionsAdapter);
-        viewpager.registerOnPageChangeCallback(listener);
-        Log.d(TAG, "There are " + questionsAdapter.getItemCount() + " questions");
-
     }
 
     private List<Question> quizSetup() {
         QuestionData questionData = new QuestionData(getBaseContext());
         questionData.open();
         List<Question> allQuestions = questionData.getAllQuestions();
+        questionData.close();
         if(allQuestions != null) {
             List<Question> quizQuestions = new ArrayList<>();
+            Random r = new Random();
             while (quizQuestions.size() < 6) {
-                Random r = new Random();
                 int i = r.nextInt(allQuestions.size());
                 quizQuestions.add(allQuestions.get(i));
                 allQuestions.remove(i);
             } // while
             questionData.close();
             quizQuestions.add(new Question());
-            /*
             quizData = new QuizData(getBaseContext());
             quizData.open();
             long q1 = quizQuestions.get(0).getId();
@@ -68,7 +86,6 @@ public class QuizActivity extends AppCompatActivity {
             long q6 = quizQuestions.get(5).getId();
             Quiz quiz = new Quiz(q1, q2, q3, q4, q5, q6, 0, null, 0);
             new QuizDBWriter().execute(quiz);
-             */
             return quizQuestions;
         } else {
             Log.d("QuizActivity.java", "questions is null");
@@ -77,15 +94,6 @@ public class QuizActivity extends AppCompatActivity {
         } // else
     } //quizSetup
 
-    private ViewPager2.OnPageChangeCallback listener = new ViewPager2.OnPageChangeCallback() {
-        @Override
-        public void onPageSelected(int position) {
-            super.onPageSelected(position);
-            if (position == 6) {
-                viewpager.setUserInputEnabled(false);
-            } //if
-        } //onPageSelected
-    };
     public class QuizDBWriter extends AsyncTask<Quiz, Quiz> {
         @Override
         protected Quiz doInBackground(Quiz... quizzes) {
@@ -99,39 +107,30 @@ public class QuizActivity extends AppCompatActivity {
         }//onPostExecute
     }//QuestionDBWriter
 
-    /*
     @Override
     protected void onResume() {
         super.onResume();
-        QuestionData questionData = new QuestionData(getBaseContext());
-        questionData.open();
-        List<Question> allQuestions = questionData.getAllQuestions();
-        questionData.close();
         quizData = new QuizData(getBaseContext());
         quizData.open();
         Quiz quiz = quizData.getCurrentQuiz();
         quizData.close();
-        if (quiz != null) {
-            List<Question> quizQuestions = new ArrayList<>();
-            quizQuestions.add(allQuestions.get((int) quiz.getQuestion1()));
-            quizQuestions.add(allQuestions.get((int) quiz.getQuestion2()));
-            quizQuestions.add(allQuestions.get((int) quiz.getQuestion3()));
-            quizQuestions.add(allQuestions.get((int) quiz.getQuestion4()));
-            quizQuestions.add(allQuestions.get((int) quiz.getQuestion5()));
-            quizQuestions.add(allQuestions.get((int) quiz.getQuestion6()));
-            viewpager = findViewById(R.id.viewpager);
-            QuestionsPagerAdapter questionsAdapter = new QuestionsPagerAdapter(getSupportFragmentManager(),
-                    getLifecycle(), quizQuestions);
-            viewpager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-            viewpager.setAdapter(questionsAdapter);
-            viewpager.registerOnPageChangeCallback(listener);
-        } //if
+        viewpager.setCurrentItem( (int) quiz.getCurrentQuestion());
     }
-     */
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        viewpager.unregisterOnPageChangeCallback(listener);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        quizData = new QuizData(getBaseContext());
+        quizData.open();
+        Quiz quiz = quizData.getCurrentQuiz();
+        quizData.close();
+        if (quizData != null ) {
+            outState.putLong("question1", quiz.getQuestion1());
+            outState.putLong("question2", quiz.getQuestion2());
+            outState.putLong("question3", quiz.getQuestion3());
+            outState.putLong("question4", quiz.getQuestion4());
+            outState.putLong("question5", quiz.getQuestion5());
+            outState.putLong("question6", quiz.getQuestion6());
+        }
     }
 }
