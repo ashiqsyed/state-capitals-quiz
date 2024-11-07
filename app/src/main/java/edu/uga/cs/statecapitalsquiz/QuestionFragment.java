@@ -134,6 +134,7 @@ public class QuestionFragment extends Fragment {
             }
 
             RadioGroup radioGroup = view.findViewById(R.id.radioGroup2);
+
             if (radioGroup != null) {
                 radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
@@ -177,7 +178,7 @@ public class QuestionFragment extends Fragment {
         int numQuestionsAnswered = (int) quiz.getCurrentQuestion();
         numQuestionsCorrect = (int) quiz.getScore();
 
-        if(selectedAnswer != null) {
+        if(selectedAnswer != null && numQuestionsAnswered <= questionNum) {
             Log.d(TAG, "numQuestionsAnswered is " + numQuestionsAnswered);
             if (selectedAnswer.equals(questions.get(questionNum).getCapital())) {
                 Log.d(TAG, selectedAnswer + " is the capital.");
