@@ -34,13 +34,19 @@ public class QuizData {
 
     public QuizData(Context context) {
         this.quizzesDbHelper = QuizzesDBHelper.getInstance(context);
-    }
+    } // constructor
 
+    /**
+     * Opens a connection to the database.
+     */
     public void open() {
         db = quizzesDbHelper.getWritableDatabase();
         Log.d(TAG, "Database opened");
     }
 
+    /**
+     * Closes connection to the database.
+     */
     public void close() {
         if (quizzesDbHelper != null) {
             quizzesDbHelper.close();
@@ -52,6 +58,11 @@ public class QuizData {
         return db.isOpen();
     }
 
+
+    /**
+     * Retrieves all entries in the quizzes table of the database.
+     * @return all entries in the quizzes table as a List of type Quiz
+     */
     public List<Quiz> getAllQuizzes() {
         ArrayList<Quiz> quizzes = new ArrayList<>();
         Cursor c = null;
@@ -106,6 +117,11 @@ public class QuizData {
         return quizzes;
     }//getAllQuizzes
 
+    /**
+     *  Stores the given quiz as the next entry into the quizzes table.
+     * @param q the given quiz object.
+     * @return the given quiz object with its table id initialized.
+     */
     public Quiz storeQuiz(Quiz q) {
 //        Log.d(TAG, "Question: " + q);
         if (q == null) {
@@ -130,6 +146,11 @@ public class QuizData {
         return q;
     }//storeQuestion
 
+
+    /**
+     * Updates the current quiz in the database with the info contained in the given quiz.
+     * @param q the given quiz object.
+     */
     public void updateQuiz(Quiz q) {
         if (q == null) {
             Log.d(TAG, "q is null");
@@ -150,6 +171,10 @@ public class QuizData {
         } // else
     } //updateQuiz
 
+    /**
+     * Retrieves the last stored quiz.
+     * @return the last stored quiz in the form of a quiz object.
+     */
     public Quiz getCurrentQuiz() {
         int column;
         Cursor c = null;

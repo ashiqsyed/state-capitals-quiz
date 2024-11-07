@@ -1,12 +1,9 @@
 package edu.uga.cs.statecapitalsquiz;
 
-import android.app.ActionBar;
-import android.app.Activity;
+
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,25 +12,18 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import java.util.Calendar;
-import java.util.Date;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import org.apache.commons.logging.LogFactory;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
+/**
+ * The game part of the app that displays a question and 3 possible answers.
+ */
 public class QuestionFragment extends Fragment {
-    private static final org.apache.commons.logging.Log log = LogFactory.getLog(QuestionFragment.class);
     private int questionNum;
     private static List<Question> questions;
     private String selectedAnswer;
@@ -42,10 +32,6 @@ public class QuestionFragment extends Fragment {
     private QuizData quizData;
     private View view;
     private TextView resultText;
-
-    public QuestionFragment() {
-
-    }
 
     public static QuestionFragment newInstance(int questionNum, List<Question> q) {
         QuestionFragment fragment = new QuestionFragment();
@@ -65,6 +51,19 @@ public class QuestionFragment extends Fragment {
         Log.d(TAG, "onCreate");
     }
 
+    /**
+     * Creates the final results screen of the app when the user swipes left on the last question.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return the view to be displayed.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (questionNum == 6) {
@@ -104,6 +103,14 @@ public class QuestionFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_question, container, false);
     }
 
+    /**
+     * Displays the questions and answers in a random order based on the list sent by the main
+     * activity through the adapter
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
@@ -154,6 +161,10 @@ public class QuestionFragment extends Fragment {
         } // if
     } // onViewCreated
 
+    /**
+     * Asynchronously updates the quiz info in the database so that game state can be retrieved
+     * on orientation change and when the app is put in the backstack
+     */
     public class QuizDBWriter extends AsyncTask<Quiz, Quiz> {
         @Override
         protected Quiz doInBackground(Quiz... quizzes) {
@@ -169,6 +180,12 @@ public class QuestionFragment extends Fragment {
         }//onPostExecute
     }//QuestionDBWriter
 
+
+    /**
+     * Checks the selected answer and records the users score and number of questions answered into
+     * the database. The last question is not updated with async do to the data being needed for
+     * the results screen
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -202,6 +219,10 @@ public class QuestionFragment extends Fragment {
         }
     } // onPause
 
+    /**
+     * Is used to update the results screen based on the final questions answer since the screen is
+     * originally created before the last question can be answered.
+     */
     @Override
     public void onResume() {
         super.onResume();

@@ -1,15 +1,11 @@
 package edu.uga.cs.statecapitalsquiz;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -19,12 +15,12 @@ import com.opencsv.CSVReader;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+/**
+ * Splash screen/entry point for the app that populates the questions table based on the State
+ * capital CSV file if the table is not already populated.
+ */
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity.java";
 
@@ -79,36 +75,29 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(view.getContext(), ViewQuizzesActivity.class);
                 startActivity(intent);
             });
-
-
-
-
-
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
     }
 
+    /**
+     * Asynchronously stores questions into the database.
+     */
     public class QuestionDBWriter extends AsyncTask<Question, Question> {
         @Override
         protected Question doInBackground(Question... questions) {
-
-//            Log.d(TAG, "In QuestionDBWriter: " + questions[0]);
             questionData.storeQuestion(questions[0]);
             return questions[0];
         }//doInBackground
 
         @Override
         protected void onPostExecute(Question question) {
-//            Log.d(TAG, "Question added to database");
         }//onPostExecute
     }//QuestionDBWriter
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }//onResume
-
+    /**
+     * Closes any open instances of the database when the activity is put in the background.
+     */
     @Override
     public void onPause() {
         super.onPause();

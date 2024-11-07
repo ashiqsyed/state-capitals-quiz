@@ -2,6 +2,10 @@ package edu.uga.cs.statecapitalsquiz;
 
 import androidx.annotation.NonNull;
 
+/**
+ * The object reference of an entry in the questions table used to hold values until
+ * they can be stored in the table.
+ */
 public class Question {
     private long id;
     private String state;

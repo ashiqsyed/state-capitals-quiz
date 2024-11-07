@@ -1,7 +1,6 @@
 package edu.uga.cs.statecapitalsquiz;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -12,6 +11,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.List;
 
+/**
+ * Activity to display the past completed quizzes.
+ */
 public class ViewQuizzesActivity extends AppCompatActivity {
 
     private QuizData quizData;
@@ -30,6 +32,7 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         quizData = new QuizData(getBaseContext());
         quizData.open();
         List<Quiz> quizzes = quizData.getAllQuizzes();
+        quizData.close();
         String quizResults = "";
         int count = 1;
         for (int i = quizzes.size(); i > 0; i--) {
@@ -42,12 +45,4 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         TextView results = findViewById(R.id.resultsText);
         results.setText(quizResults);
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (quizData != null) {
-            quizData.close();
-        } // if
-    } // onPause
 }

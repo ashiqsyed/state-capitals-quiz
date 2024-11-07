@@ -5,6 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+
+/**
+ * Support class that initializes the database and the instances to it.
+ */
 public class QuizzesDBHelper extends SQLiteOpenHelper {
 
     private static final String DEBUG_TAG = "QuizzesDBHelper";

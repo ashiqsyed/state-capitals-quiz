@@ -13,7 +13,7 @@ public class QuestionsPagerAdapter extends FragmentStateAdapter {
     public QuestionsPagerAdapter(FragmentManager fragmentManager, Lifecycle lifecycle, List<Question> q) {
         super(fragmentManager, lifecycle);
         this.questions = q;
-    }
+    } // constructor
 
 
     public Fragment createFragment(int numQuestion) {

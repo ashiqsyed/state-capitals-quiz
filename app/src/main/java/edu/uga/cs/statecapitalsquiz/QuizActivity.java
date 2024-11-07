@@ -1,7 +1,6 @@
 package edu.uga.cs.statecapitalsquiz;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * The host for QuestionFragment and retrieves 6 random questions from the database
+ * to be used in the current game.
+ */
 public class QuizActivity extends AppCompatActivity {
     private static final org.apache.commons.logging.Log log = LogFactory.getLog(QuizActivity.class);
     private final String TAG = "QuizActivity.java";
@@ -61,6 +64,12 @@ public class QuizActivity extends AppCompatActivity {
         viewpager.setAdapter(questionsAdapter);
     }
 
+    /**
+     * Gets the questions to be used in the current game and creates an
+     * entry in the quiz table to hold values important for restoring state
+     * @return a List of Question objects to be used by the viewpager and
+     * QuestionFragment to run the game.
+     */
     private List<Question> quizSetup() {
         QuestionData questionData = new QuestionData(getBaseContext());
         questionData.open();
@@ -94,6 +103,9 @@ public class QuizActivity extends AppCompatActivity {
         } // else
     } //quizSetup
 
+    /**
+     * Asynchronously adds the current quiz to the database.
+     */
     public class QuizDBWriter extends AsyncTask<Quiz, Quiz> {
         @Override
         protected Quiz doInBackground(Quiz... quizzes) {
@@ -107,6 +119,11 @@ public class QuizActivity extends AppCompatActivity {
         }//onPostExecute
     }//QuestionDBWriter
 
+    /**
+     * Gets the amount of questions answered and moves the viewpager to the
+     * current unanswered question after the app has been restored from the
+     * background
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -117,6 +134,12 @@ public class QuizActivity extends AppCompatActivity {
         viewpager.setCurrentItem( (int) quiz.getCurrentQuestion());
     }
 
+    /**
+     * Saves the state of the game so that it can be restored after orientation change
+     *
+     * @param outState Bundle in which to place your saved state.
+     *
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class helps deal with fetching questions from the SQLite database
+ * This class helps deal with fetching questions from the SQLite database similarly to
+ * the quizData class.
  */
 public class QuestionData {
     private final String TAG = "QuestionData.java";
@@ -112,18 +113,9 @@ public class QuestionData {
             long id = db.insert(QuizzesDBHelper.TABLE_QUESTIONS, null, val);
             q.setId(id);
         }//else
-//        Log.d(TAG, "Stored question with id " + id);
         return q;
     }//storeQuestion
 
-    /**
-     * Resets the questions table to clear any access data.
-     */
-    public void resetTable () {
-        db.execSQL("drop table if exists questions");
-        db.execSQL("create table questions (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " state TEXT, capital TEXT, extra1 TEXT, extra2 TEXT)");
-    } // resetDB
 
 
 }//QuestionData
